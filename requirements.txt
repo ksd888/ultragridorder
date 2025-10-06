@@ -1,0 +1,35 @@
+# Ultra Grid Trading System V2.0 Dependencies
+
+# Core Trading
+ccxt>=4.0.0
+numpy>=1.24.0
+pandas>=2.0.0
+
+# Configuration
+PyYAML>=6.0
+
+# Database
+
+
+# Retry Logic
+tenacity>=8.2.0
+
+# Notifications
+requests>=2.31.0
+
+# Dashboard (Optional)
+streamlit>=1.28.0
+plotly>=5.17.0
+altair>=5.1.0
+
+# Performance
+numba>=0.58.0  # JIT compilation for indicators
+
+# Development
+pytest>=7.4.0
+pytest-cov>=4.1.0
+black>=23.9.0
+flake8>=6.1.0
+websockets>=10.4  # For WebSocket real-time data
+aiohttp>=3.8.0    # For async HTTP (optional)
+scipy>=1.10.0     # For advanced statistics in Monte Carlo

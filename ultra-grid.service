@@ -1,0 +1,16 @@
+[Unit]
+Description=Ultra Grid Trading Bot V2.0
+After=network.target
+
+[Service]
+Type=simple
+User=YOUR_USER
+WorkingDirectory=/path/to/ultra-grid-v2
+Environment="BINANCE_API_KEY=your_key"
+Environment="BINANCE_SECRET=your_secret"
+ExecStart=/usr/bin/python3 /path/to/ultra-grid-v2/start_with_optimization.py
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target

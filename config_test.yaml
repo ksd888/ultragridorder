@@ -1,0 +1,92 @@
+# Ultra Grid Trading Bot - Test Configuration
+# Dry-run mode for safe testing
+
+# Trading Pair
+symbol: "ADA/USDT"
+
+# Grid Configuration
+grid_csv: "grid_plan_mc.csv"  # Use Monte Carlo generated grid
+grid_reload_sec: 0  # Disable reload for testing
+
+# Budget & Position Sizing
+budget_usdt: 300.0
+max_open_orders: 3
+max_grid_levels: 6
+
+# Take Profit
+fixed_tp_pct: 0.015  # 1.5%
+tp_offset_pct: 0.001
+
+# Grid Spacing
+min_grid_distance: 0.01
+max_spread_pct: 0.005
+
+# Advanced Filters
+min_volatility: 0.002
+max_volatility: 0.05
+
+# Signal Thresholds
+cvd_z_threshold: 0.5
+ts_z_threshold: 0.5
+confirm_bars: 0
+imbalance_threshold: 0.50
+
+# Data Aggregation
+bar_interval_ms: 5000
+cvd_ema_span: 20
+ts_ema_span: 15
+
+# Execution
+high_price_threshold: 1000.0
+quote_safety_factor: 0.999
+min_notional_override: null
+
+# Mode
+dry_run: true  # SAFE MODE - No real trades!
+
+# Safety Settings
+safety:
+  enable_stop_loss: true
+  stop_loss_type: "atr"
+  fixed_sl_pct: 0.005  # 0.5% - less than TP
+  atr_sl_multiplier: 2.5
+  min_sl_distance_pct: 0.01
+
+  trailing_sl_activation: 0.012
+  trailing_sl_distance: 0.007
+
+  enable_circuit_breaker: true
+  daily_loss_limit_pct: 0.30
+  max_consecutive_losses: 3
+  max_drawdown_stop_pct: 0.06
+  circuit_breaker_cooldown_hours: 4
+
+  enable_emergency_exit: true
+  flash_crash_threshold_pct: 0.10
+  api_failure_threshold: 60
+
+  max_position_size_pct: 0.15
+  max_total_exposure_pct: 0.95
+  max_position_age_hours: 48
+
+# Reconciliation
+reconciliation:
+  enabled: true
+  interval_sec: 300
+  auto_fix: true
+  balance_threshold_pct: 0.05
+
+# Logging
+log_csv: "logs/decisions_test.csv"
+dust_ledger: "logs/dust_ledger_test.csv"
+
+# State Persistence
+state_db: "data/bot_state_test.db"
+
+# Health Monitoring
+health_check_interval_sec: 30
+
+# Telegram Notifications
+enable_telegram: false
+telegram_token: ""
+telegram_chat_id: ""

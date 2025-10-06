@@ -1,0 +1,197 @@
+# ============================================================================
+# Ultra Grid Trading System V2.0 - Configuration
+# ============================================================================
+# Last Updated: 2025-01-XX
+# Version: 2.0.1
+# ============================================================================
+
+# ============================================================================
+# CORE SETTINGS
+# ============================================================================
+symbol: "ADA/USDT"
+mode: "spot"  # spot or futures
+budget_usdt: 200.0
+reserve_pct: 0.05  # Keep 5% as reserve for fees/slippage
+dry_run: true  # ⚠️ SET TO FALSE FOR LIVE TRADING
+
+# ============================================================================
+# GRID SETTINGS
+# ============================================================================
+grid_source: "csv"  # csv or dynamic
+grid_csv: "grid_plan.csv"
+max_grid_levels: 6
+min_grid_distance: 0.0020  # 0.2% minimum distance between levels
+grid_tolerance: 0.0015  # 0.15% tolerance for level matching
+grid_reload_sec: 0  # 0 = no auto-reload, >0 = reload interval
+
+# ============================================================================
+# SIGNAL PARAMETERS
+# ============================================================================
+cvd_z_threshold: 1.5  # Cumulative Volume Delta z-score threshold
+ts_z_threshold: 1.5   # Trade Size z-score threshold
+imbalance_threshold: 0.55  # Order imbalance threshold (0.5-1.0)
+confirm_bars: 1  # Number of consecutive bars to confirm signal (1-3 recommended)
+
+# ============================================================================
+# ORDERFLOW SETTINGS
+# ============================================================================
+bar_interval_ms: 5000  # 5-second bars
+orderbook_depth: 20  # Number of levels to fetch
+cvd_ema_span: 20  # EMA span for CVD smoothing
+ts_ema_span: 20   # EMA span for Trade Size smoothing
+
+# ============================================================================
+# TECHNICAL INDICATORS
+# ============================================================================
+rsi_period: 14
+rsi_oversold: 30.0
+rsi_overbought: 70.0  # Added: for completeness
+bb_period: 20
+bb_std: 2.0
+
+# ============================================================================
+# ADVANCED FILTERS
+# ============================================================================
+# ✅ FIXED: More realistic values for ADA/USDT
+min_volatility: 0.005  # 0.5% minimum (was 0.002)
+max_volatility: 0.05   # 5% maximum (was 0.10 - too high)
+min_spread_pct: 0.0001  # 0.01% minimum
+max_spread_pct: 0.005   # 0.5% maximum (was 0.01 - too wide)
+
+# ============================================================================
+# TAKE PROFIT STRATEGY
+# ============================================================================
+tp_strategy: "fixed"  # fixed, dynamic, or liquidity
+fixed_tp_pct: 0.015   # 1.5% take profit
+tp_offset_pct: 0.001  # 0.1% offset above best bid
+
+# ============================================================================
+# POSITION SIZING
+# ============================================================================
+position_sizing: "volatility"  # fixed, volatility, or kelly
+
+# ============================================================================
+# ORDER MANAGEMENT
+# ============================================================================
+max_open_orders: 6
+order_cooldown_sec: 30  # Minimum time between orders
+resync_open_orders_sec: 300  # Resync every 5 minutes
+
+# ============================================================================
+# EXECUTION
+# ============================================================================
+high_price_threshold: 100.0  # Use quoteOrderQty for prices > this
+min_notional_override: null  # Override exchange minimum (or null)
+
+# ============================================================================
+# STATE MANAGEMENT
+# ============================================================================
+state_db: "state/bot_state.db"
+
+# ============================================================================
+# LOGGING
+# ============================================================================
+log_csv: "logs/decisions.csv"
+dust_ledger: "logs/dust_ledger.csv"
+
+# ============================================================================
+# HEALTH MONITORING
+# ============================================================================
+health_check_interval_sec: 60  # Check health every minute
+max_api_failures: 10  # Max consecutive API failures before critical
+max_data_staleness_sec: 30  # Max seconds before data is stale
+
+# ============================================================================
+# TELEGRAM NOTIFICATIONS
+# ============================================================================
+enable_telegram: false  # Set to true to enable
+telegram_token: ""
+telegram_chat_id: ""
+
+# ============================================================================
+# SAFETY & RISK MANAGEMENT
+# ============================================================================
+safety:
+  # Stop Loss
+  enable_stop_loss: true
+  stop_loss_type: "atr"  # fixed, atr, or trailing
+  fixed_sl_pct: 0.02  # 2% for fixed SL
+  atr_sl_multiplier: 2.5  # ✅ FIXED: 2.5 instead of 2.0 (wider SL)
+  min_sl_distance_pct: 0.01  # ✅ NEW: Minimum 1% SL distance
+  
+  # Trailing Stop Loss
+  trailing_sl_activation: 0.012  # ✅ FIXED: Activate at 1.2% profit
+  trailing_sl_distance: 0.007    # ✅ FIXED: Trail at 0.7% (was 0.5%)
+  
+  # Circuit Breaker
+  enable_circuit_breaker: true
+  daily_loss_limit_pct: 0.03  # ✅ FIXED: 3% daily loss limit (was 5% - too high for $200 budget)
+  max_consecutive_losses: 3   # ✅ FIXED: 3 losses (was 5)
+  max_drawdown_stop_pct: 0.06 # ✅ FIXED: 6% max drawdown (was 8%)
+  circuit_breaker_cooldown_hours: 4
+  
+  # Emergency Exit
+  enable_emergency_exit: true
+  flash_crash_threshold_pct: 0.10  # -10% in 5 minutes
+  api_failure_threshold: 60  # ✅ NEW: 60 consecutive failures
+  
+  # Position Limits
+  max_position_size_pct: 0.25  # ✅ FIXED: 25% max per position (was 30%)
+  max_total_exposure_pct: 0.90  # 90% max total exposure
+  max_position_age_hours: 48  # ✅ NEW: Force close after 48 hours
+
+# ============================================================================
+# MONTE CARLO OPTIMIZATION
+# ============================================================================
+monte_carlo:
+  enabled: false  # Enable for grid optimization
+  n_simulations: 1000
+  lookback_days: 30
+  confidence_level: 0.95  # ✅ NEW: Confidence level for VaR
+
+# ============================================================================
+# POSITION RECONCILIATION
+# ============================================================================
+reconciliation:
+  enabled: true
+  interval_sec: 300  # Every 5 minutes
+  auto_fix: true  # Automatically fix discrepancies
+  balance_threshold_pct: 0.05  # ✅ NEW: 5% threshold for balance mismatch
+
+# ============================================================================
+# ADVANCED SETTINGS (Use with caution)
+# ============================================================================
+advanced:
+  # Performance
+  enable_jit_compilation: false  # Use Numba JIT (requires numba package)
+  cache_indicators: true  # ✅ NEW: Cache indicator calculations
+  
+  # Data Quality
+  min_trades_per_bar: 5  # ✅ NEW: Minimum trades for valid bar
+  min_orderbook_levels: 10  # ✅ NEW: Minimum OB levels
+  
+  # Risk
+  correlation_threshold: 0.8  # ✅ NEW: For multi-pair trading
+  max_correlation_exposure: 0.5  # ✅ NEW: Max correlated exposure
+
+# ============================================================================
+# NOTES
+# ============================================================================
+# 
+# IMPORTANT CHANGES FROM DEFAULT:
+# 1. Reduced volatility ranges (more realistic for ADA)
+# 2. Tighter spread filter (0.5% instead of 1%)
+# 3. Conservative circuit breaker (3% daily loss, 3 consecutive losses)
+# 4. Wider SL distance (minimum 1%, ATR multiplier 2.5)
+# 5. Better trailing stop (activate at 1.2%, trail at 0.7%)
+# 6. Added max position age (48 hours)
+# 7. Reduced max position size (25% instead of 30%)
+# 
+# TESTING CHECKLIST:
+# [ ] Run with dry_run: true for 24+ hours
+# [ ] Monitor decision log for signal quality
+# [ ] Test circuit breaker manually
+# [ ] Verify reconciliation works
+# [ ] Check dust ledger for excessive dust
+# 
+# ============================================================================
